@@ -6,6 +6,92 @@ class Transaction:
         self.customer_cart = dict()
         pass
     
+    def __delete_item__(self):
+        item_name = input ("Masukan Nama Barang yang ingin dihapus: ")
+
+        if item_name not in self.customer_cart:
+            print("Barang tidak ada di keranjang. Ingin tambahkan ke keranjang?")
+            print("1. Ya")
+            print("2. Tidak")
+            choice = int(input('Masukkan Nomor Tugas : '))
+            if choice == 1:
+                self.__add_item__()
+            return
+
+        self.customer_cart.pop(item_name)
+        return
+    
+    def __reset_transaction__(self):
+        self.customer_cart = dict()
+        return
+    
+    def __update_item_name__(self):
+        item_name = input ("Masukan Nama Barang yang ingin diupdate: ")
+
+        if item_name not in self.customer_cart:
+            print("Barang tidak ada di keranjang. Ingin tambahkan ke keranjang?")
+            print("1. Ya")
+            print("2. Tidak")
+            choice = int(input('Masukkan Nomor Tugas : '))
+            if choice == 1:
+                self.__add_item__()
+            return
+
+        while True:
+            item_name_update = input("Masukan Nama Item Baru: ")
+            break
+     
+        current_data = self.customer_cart[item_name]
+        self.customer_cart.pop(item_name)
+        self.customer_cart.update({
+            item_name_update : current_data
+        })
+        return
+    
+    def __update_item_qty__(self):
+        item_name = input ("Masukan Nama Barang yang diupdate:")
+
+        if item_name not in self.customer_cart:
+            print("Barang tidak ada di keranjang. Ingin tambahkan ke keranjang?")
+            print("1. Ya")
+            print("2. Tidak")
+            choice = int(input('Masukkan Nomor Tugas : '))
+            if choice == 1:
+                self.__add_item__()
+            return
+
+        while True:
+            try:
+                item_qty = int(input("Masukan Jumlah Barang: "))
+                break  # Break out of the loop if the input is a valid integer
+            except ValueError:
+                print("Input harus berupa angka. Silakan coba lagi.")
+
+        self.customer_cart[item_name]['qty'] = item_qty
+        return
+    
+    def __update_item_price__(self):
+        item_name = input ("Masukan Nama Barang yang diupdate:")
+
+        if item_name not in self.customer_cart:
+            print("Barang tidak ada di keranjang. Ingin tambahkan ke keranjang?")
+            print("1. Ya")
+            print("2. Tidak")
+            choice = int(input('Masukkan Nomor Tugas : '))
+            if choice == 1:
+                self.__add_item__()
+            return
+
+        while True:
+            try:
+                item_price = int(input("Masukan Harga Barang:"))
+                break  # Break out of the loop if the input is a valid integer
+            except ValueError:
+                print("Input harus berupa angka. Silakan coba lagi.")
+
+        self.customer_cart[item_name]['price'] = item_price
+        return
+
     def __add_item__(self):
         """
         Fungsi untuk menambahkan barang.
@@ -63,11 +149,14 @@ class Transaction:
             self.__cart_list__()
         print("-"*60)
         print("1. Tambahkan item yang ingin di beli")
-        print("2. Perbarui nama item")
-        print("3. Perbarui jumlah item")
-        print("4. Perbarui harga item")
-        print("5. Menghapus salah satu item")
-        print("6. Menghapus item keseluruhan")
+        if len(self.customer_cart) > 0:
+            print("2. Perbarui nama item")
+            print("3. Perbarui jumlah item")
+            print("4. Perbarui harga item")
+            print("5. Menghapus salah satu item")
+            print("6. Menghapus item keseluruhan")
+            print("7. Perikasa transaksi")
+            print("8. Checkout")
         print("9. Exit\n")
         return 
 
@@ -77,8 +166,15 @@ class Transaction:
         if choice == 1:
             self.__add_item__()
         elif choice == 2:
-            pass
-        
+            self.__update_item_name__()
+        elif choice == 3:
+            self.__update_item_qty__()
+        elif choice == 4:
+            self.__update_item_price__()
+        elif choice == 5:
+            self.__delete_item__()
+        elif choice == 6:
+            self.__reset_transaction__()
         return 
     
     def display(self): 
