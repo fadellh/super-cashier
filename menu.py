@@ -6,35 +6,54 @@ class Transaction:
         self.customer_cart = dict()
         pass
     
+    def __choice_handler__(self):
+        while True:
+            try:
+                choice = int(input('Masukkan Nomor Tugas : '))
+                break  # Break out of the loop if the input is a valid integer
+            except ValueError:
+                print("Input harus berupa angka. Silakan coba lagi.")
+            except Exception as e:
+                print(e)
+                return
+            
+        return choice
+
     def __delete_item__(self):
-        item_name = input ("Masukan Nama Barang yang ingin dihapus: ")
+        item_name = input("Masukan Nama Barang yang ingin dihapus: ").lower()
 
         if item_name not in self.customer_cart:
             print("Barang tidak ada di keranjang. Ingin tambahkan ke keranjang?")
             print("1. Ya")
             print("2. Tidak")
-            choice = int(input('Masukkan Nomor Tugas : '))
+            choice = self.__choice_handler__()
             if choice == 1:
-                self.__add_item__()
+                self.__add_item__(item_name)
             return
 
         self.customer_cart.pop(item_name)
         return
     
     def __reset_transaction__(self):
-        self.customer_cart = dict()
+        print("Yakin menghapus semua keranjang?")
+        print("1. Ya")
+        print("2. Tidak")
+        choice = self.__choice_handler__()
+        if choice == 1:
+            self.customer_cart = dict()
+            print("Semua item berhasil di delete!")
         return
     
     def __update_item_name__(self):
-        item_name = input ("Masukan Nama Barang yang ingin diupdate: ")
+        item_name = input ("Masukan Nama Barang yang ingin diupdate: ").lower()
 
         if item_name not in self.customer_cart:
             print("Barang tidak ada di keranjang. Ingin tambahkan ke keranjang?")
             print("1. Ya")
             print("2. Tidak")
-            choice = int(input('Masukkan Nomor Tugas : '))
+            choice = self.__choice_handler__()
             if choice == 1:
-                self.__add_item__()
+                self.__add_item__(item_name)
             return
 
         while True:
@@ -49,15 +68,15 @@ class Transaction:
         return
     
     def __update_item_qty__(self):
-        item_name = input ("Masukan Nama Barang yang diupdate:")
+        item_name = input ("Masukan Nama Barang yang diupdate:").lower()
 
         if item_name not in self.customer_cart:
             print("Barang tidak ada di keranjang. Ingin tambahkan ke keranjang?")
             print("1. Ya")
             print("2. Tidak")
-            choice = int(input('Masukkan Nomor Tugas : '))
+            choice = self.__choice_handler__()
             if choice == 1:
-                self.__add_item__()
+                self.__add_item__(item_name)
             return
 
         while True:
@@ -71,46 +90,46 @@ class Transaction:
         return
     
     def __update_item_price__(self):
-        item_name = input ("Masukan Nama Barang yang diupdate:")
+        item_name = input ("Masukan Nama Barang yang diupdate: ").lower()
 
         if item_name not in self.customer_cart:
             print("Barang tidak ada di keranjang. Ingin tambahkan ke keranjang?")
             print("1. Ya")
             print("2. Tidak")
-            choice = int(input('Masukkan Nomor Tugas : '))
+            choice = self.__choice_handler__()
             if choice == 1:
-                self.__add_item__()
+                self.__add_item__(item_name)
             return
 
         while True:
             try:
-                item_price = int(input("Masukan Harga Barang:"))
-                break  # Break out of the loop if the input is a valid integer
+                item_price = int(input("Masukan Harga Barang: "))
+                break  
             except ValueError:
                 print("Input harus berupa angka. Silakan coba lagi.")
 
         self.customer_cart[item_name]['price'] = item_price
         return
 
-    def __add_item__(self):
+    def __add_item__(self, item_name = None):
         """
         Fungsi untuk menambahkan barang.
         """
-        item_name = input ("Masukan Nama Barang:")
+        if item_name == None:
+            item_name = input ("Masukan Nama Barang: ").lower()
         while True:
             try:
                 item_qty = int(input("Masukan Jumlah Barang: "))
-                break  # Break out of the loop if the input is a valid integer
+                break  
             except ValueError:
                 print("Input harus berupa angka. Silakan coba lagi.")
         while True:
             try:
-                item_price = int(input("Masukan Harga Barang:"))
-                break  # Break out of the loop if the input is a valid integer
+                item_price = int(input("Masukan Harga Barang: "))
+                break  
             except ValueError:
                 print("Input harus berupa angka. Silakan coba lagi.")
 
-        # item = dict()
         self.customer_cart.update({
             item_name : {
                 "qty": item_qty,
@@ -118,6 +137,33 @@ class Transaction:
             },
         
         })
+
+    def __check_order__(self):
+        print("Daftar Belanjaan Anda")
+        print("-"*60)
+        self.__cart_list__()
+        return
+    
+    def __checkout__(self):
+        print("Daftar Belanjaan Anda")
+        print("-"*60)
+        self.__cart_list__()
+        
+
+        total_price = 0
+        for key, v in self.customer_cart.items():
+            total_price = total_price + (v['qty'] * v['price'])
+
+        discount_1, discount_2, discount_3 = 5, 8, 10
+        if total_price > 500_000:
+            total_price = total_price * (100-discount_3)/100
+        elif total_price > 300_000:
+            total_price = total_price * (100-discount_2)/100
+        elif total_price > 200_000:
+            total_price = total_price * (100-discount_1)/100
+    
+        print(f"Total Belanja yang harus dibayarkan adalah Rp.{total_price},-")
+        return 
 
     def __cart_list__(self):
         table_data = []
@@ -161,7 +207,7 @@ class Transaction:
         return 
 
     def action(self):
-        self.choice = int(input('Masukkan Nomor Tugas : '))
+        self.choice = self.__choice_handler__()
         choice = self.choice
         if choice == 1:
             self.__add_item__()
@@ -175,6 +221,12 @@ class Transaction:
             self.__delete_item__()
         elif choice == 6:
             self.__reset_transaction__()
+        elif choice == 7:
+            self.__cart_list__()
+        elif choice == 8:
+            self.__checkout__()
+            self.choice = 9
+            return
         return 
     
     def display(self): 
