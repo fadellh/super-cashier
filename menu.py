@@ -1,9 +1,11 @@
+import datetime
 from tabulate import tabulate
 
 class Transaction:
     def __init__(self) -> None:
         self.choice = None
         self.customer_cart = dict()
+        self.transaction_id = ""
         pass
     
     def __choice_handler__(self):
@@ -146,6 +148,7 @@ class Transaction:
     
     def __checkout__(self):
         print("Daftar Belanjaan Anda")
+        print(f"ID Transaksi: {self.transaction_id}")
         print("-"*60)
         self.__cart_list__()
         
@@ -192,6 +195,7 @@ class Transaction:
             print("SELAMAT DATANG DI SUPERMARKET ANDI, INI ADALAH LAYANAN KASIR SELF SERVICE")
         else:
             print("Daftar Belanjaan Anda")
+            print(f"ID Transaksi: {self.transaction_id}")
             self.__cart_list__()
         print("-"*60)
         print("1. Tambahkan item yang ingin di beli")
@@ -230,6 +234,8 @@ class Transaction:
         return 
     
     def display(self): 
+        trx_id = str(datetime.datetime.now().year)+''+str(datetime.datetime.now().month)+''+str(datetime.datetime.now().day)+''+str(datetime.datetime.now().microsecond)
+        self.transaction_id = trx_id
         while self.choice != 9:
             self.list()
             self.action()
